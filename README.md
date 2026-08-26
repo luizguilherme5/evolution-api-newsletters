@@ -14,6 +14,9 @@ Redis, sessions, volumes, or webhook configuration.
 ghcr.io/luizguilherme5/evolution-api-newsletters:2.4.0-rc2-newsletters.2
 ```
 
+The Coolify deployment also uses the compatibility tag
+`2.4.0-rc2-newsletters.1`; both tags point to the same verified build.
+
 ## Runtime switch
 
 ```text

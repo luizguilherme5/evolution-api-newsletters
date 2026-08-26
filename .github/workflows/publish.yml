@@ -31,5 +31,6 @@ jobs:
           provenance: true
           sbom: true
           tags: |
+            ghcr.io/luizguilherme5/evolution-api-newsletters:2.4.0-rc2-newsletters.1
             ghcr.io/luizguilherme5/evolution-api-newsletters:2.4.0-rc2-newsletters.2
             ghcr.io/luizguilherme5/evolution-api-newsletters:latest
