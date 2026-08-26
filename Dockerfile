@@ -8,4 +8,4 @@ LABEL org.opencontainers.image.source="https://github.com/luizguilherme5/evoluti
 COPY patch-newsletter-filter.cjs /tmp/patch-newsletter-filter.cjs
 RUN node /tmp/patch-newsletter-filter.cjs && rm /tmp/patch-newsletter-filter.cjs
 
-ENV CONFIG_SESSION_PHONE_READ_NEWSLETTERS=false
+ENV CONFIG_SESSION_PHONE_READ_NEWSLETTERS=true
