@@ -12,6 +12,10 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      ASSET: evolution-api-2.4.0-rc2-newsletter-20260825.tar.gz
+      LEGACY_LOCAL: evolution-api:2.4.0-rc2-newsletter-20260825
+      REGISTRY_IMAGE: ghcr.io/luizguilherme5/evolution-api-newsletters
     steps:
       - uses: actions/checkout@v4
 
@@ -21,16 +25,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/setup-buildx-action@v3
+      - name: Load the exact functional 2026-08-25 image
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download legacy-image-20260825 --pattern "$ASSET"
+          echo "3fc2aabbe49e5b7b74830baec425440628bad2af04c4829f96f98aa19411d975  $ASSET" | sha256sum --check --strict
+          gzip --decompress --keep "$ASSET"
+          docker load --input "${ASSET%.gz}"
+          docker image inspect "$LEGACY_LOCAL"
 
-      - uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64
-          push: true
-          provenance: true
-          sbom: true
-          tags: |
-            ghcr.io/luizguilherme5/evolution-api-newsletters:2.4.0-rc2-newsletters.1
-            ghcr.io/luizguilherme5/evolution-api-newsletters:2.4.0-rc2-newsletters.2
-            ghcr.io/luizguilherme5/evolution-api-newsletters:latest
+      - name: Publish the preserved functional base
+        run: |
+          docker tag "$LEGACY_LOCAL" "$REGISTRY_IMAGE:legacy-20260825"
+          docker push "$REGISTRY_IMAGE:legacy-20260825"
+
+      - name: Apply the inbound newsletter patch
+        run: |
+          docker build --build-arg "BASE_IMAGE=$LEGACY_LOCAL" --tag "$REGISTRY_IMAGE:2.4.0-rc2-newsletters.3" .
+          docker tag "$REGISTRY_IMAGE:2.4.0-rc2-newsletters.3" "$REGISTRY_IMAGE:2.4.0-rc2-newsletters.1"
+          docker tag "$REGISTRY_IMAGE:2.4.0-rc2-newsletters.3" "$REGISTRY_IMAGE:latest"
+          docker push "$REGISTRY_IMAGE:2.4.0-rc2-newsletters.3"
+          docker push "$REGISTRY_IMAGE:2.4.0-rc2-newsletters.1"
+          docker push "$REGISTRY_IMAGE:latest"

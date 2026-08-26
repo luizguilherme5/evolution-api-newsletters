@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=evoapicloud/evolution-api@sha256:b4a18ed5213d34a0845f841ba9afae1b67940457d021b42af863eae67dc2cfbd
+ARG BASE_IMAGE=evolution-api:2.4.0-rc2-newsletter-20260825
 FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.title="Evolution API with opt-in newsletter capture"
