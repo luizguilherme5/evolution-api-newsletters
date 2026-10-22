@@ -1,5 +1,7 @@
 ARG BASE_IMAGE=evolution-api:2.4.0-rc2-newsletter-20260825
+FROM node:24.22.1-alpine3.24 AS patched-node
 FROM ${BASE_IMAGE}
+COPY --from=patched-node /usr/local/bin/node /usr/local/bin/node
 
 LABEL org.opencontainers.image.title="Evolution API with opt-in newsletter capture"
 LABEL org.opencontainers.image.description="Minimal overlay that allows WhatsApp newsletter JIDs when explicitly enabled"
